@@ -1,3 +1,6 @@
+use rocket::serde::Serialize;
+
+#[derive(Serialize)]
 pub struct FtpConfiguration {
     id: i64,
     schematic_path: String,
@@ -43,6 +46,6 @@ pub struct Reviews {
     reviewer_uuid: String,
     rating: String,
     feedback: String,
-    review_date: dateTimeWhaah,
+    // review_date: dateTimeWhaah,
     sent: i8,
 }
