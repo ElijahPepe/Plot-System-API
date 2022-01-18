@@ -1,0 +1,32 @@
+[package]
+name = "sea_orm_rocket_integration_test"
+version = "0.1.0"
+authors = ["Sam Samai <sam@studio2pi.com.au>"]
+edition = "2021"
+publish = false
+
+[workspace]
+
+[dependencies]
+async-stream = { version = "^0.3" }
+async-trait = { version = "0.1" }
+futures = { version = "^0.3" }
+futures-util = { version = "^0.3" }
+rocket = { version = "0.5.0-rc.1", features = [
+  "json",
+] }
+rocket_dyn_templates = { version = "0.1.0-rc.1", features = [
+  "tera",
+] }
+serde_json = { version = "^1" }
+
+[dependencies.sea-orm]
+version = "^0.5.0"
+features = ["macros", "runtime-tokio-native-tls"]
+default-features = false
+
+[dependencies.sea-orm-rocket]
+git = "https://github.com/SeaQL/sea-orm"
+
+[features]
+default = ["sea-orm/sqlx-mysql"]
