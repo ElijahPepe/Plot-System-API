@@ -1,15 +1,13 @@
 use sea_orm::entity::*;
 use sea_orm::Database;
 
-mod prelude;
-mod sea_orm_active_enums;
-mod test;
+mod entities;
 
-use prelude::*;
+use entities::{prelude::*, *};
 
 #[async_std::main]
 async fn main() {
-    let db = Database::connect("mysql://root@localhost/plotsystem")
+    let db = Database::connect("mysql://root@localhost/generate_test")
         .await
         .unwrap();
 
