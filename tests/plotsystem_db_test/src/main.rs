@@ -11,16 +11,21 @@ async fn main() {
         .await
         .unwrap();
 
-    let builders: Vec<plotsystem_builders::Model> =
-        PlotsystemBuilders::find().all(&db).await.unwrap();
+    // let builders: Vec<plotsystem_builders::Model> =
+    //     PlotsystemBuilders::find().all(&db).await.unwrap();
 
     // println!("{:?}", builders);
 
+    // println!(
+    //     "{:?}",
+    //     PlotsystemCityProjects::find_by_id(1)
+    //         .one(&db)
+    //         .await
+    //         .unwrap()
+    // )
+
     println!(
         "{:?}",
-        PlotsystemCityProjects::find_by_id(1)
-            .one(&db)
-            .await
-            .unwrap()
+        PlotsystemFtpConfigurations::find().all(&db).await.unwrap()
     )
 }
