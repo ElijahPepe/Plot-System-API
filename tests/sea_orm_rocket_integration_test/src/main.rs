@@ -32,19 +32,10 @@ async fn get_ftp_configuration(
 ) -> Result<Json<plotsystem_ftp_configurations::Model>, Status> {
     let db = conn.into_inner();
 
-    let a: plotsystem_ftp_configurations::Model = PlotsystemFtpConfigurations::find_by_id(id)
-        .one(db)
-        .await
-        .unwrap()
-        .unwrap()
-        .into();
-
-    println!("{:?}", a);
-
     return match id_type.as_str() {
         "ftp_id" => Ok(Json(get::ftp_configuration::by_ftp_id(db, id).await)),
-        "server_id" => Ok(Json(get::ftp_configuration::by_server_id(db, id).await)), // Temporary
-        "cp_id" => Ok(Json(get::ftp_configuration::by_cp_id(db, id).await)),         // Temporary
+        "server_id" => Ok(Json(get::ftp_configuration::by_server_id(db, id).await)),
+        "cp_id" => Ok(Json(get::ftp_configuration::by_cp_id(db, id).await)),
         _ => Err(Status::BadRequest),
     };
 }

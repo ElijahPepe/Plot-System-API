@@ -29,6 +29,8 @@ pub async fn by_server_id(
         .ftp_configuration_id
         .unwrap();
 
+    println!("ftp id is {}", ftp_id);
+
     let ftp = by_ftp_id(db, ftp_id).await;
 
     return ftp;

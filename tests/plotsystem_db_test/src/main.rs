@@ -25,7 +25,7 @@ async fn main() {
     // )
 
     println!(
-        "{:?}",
+        "{:#?}",
         PlotsystemFtpConfigurations::find().all(&db).await.unwrap()
     )
 }
