@@ -15,15 +15,6 @@ use entities::{prelude::*, *};
 
 mod get;
 
-#[get("/err/<id>")]
-fn err(id: i32) -> Result<Json<i32>, Status> {
-    if id == 1 {
-        return Ok(Json(id));
-    } else {
-        return Err(Status::BadRequest);
-    }
-}
-
 #[get("/get_ftp_configuration/<id_type>/<id>")]
 async fn get_ftp_configuration(
     conn: Connection<'_, Db>,
@@ -40,9 +31,20 @@ async fn get_ftp_configuration(
     };
 }
 
+#[get("/<bytes>")]
+async fn byte_arr(bytes: String) -> Status {
+    if bytes.as_bytes()
+        == &[112_u8, 105_u8, 112_u8, 112_u8, 101_u8, 110_u8]
+    {
+        return Status::UnavailableForLegalReasons;
+    } else {
+        return Status::NotFound;
+    }
+}
+
 #[launch]
 fn rocket() -> _ {
     rocket::build()
         .attach(Db::init())
-        .mount("/", routes![get_ftp_configuration, err])
+        .mount("/", routes![get_ftp_configuration, byte_arr])
 }
