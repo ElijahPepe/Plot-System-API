@@ -20,7 +20,9 @@ fn rocket() -> _ {
             routes::get::get_city_project,
             routes::get::get_city_projects,
             routes::get::get_server,
-            routes::get::byte_arr
+            routes::get::get_plots,
+            routes::get::byte_arr,
+            //routes::get::vec_enum,
         ],
     )
 }

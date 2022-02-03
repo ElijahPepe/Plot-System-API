@@ -2,6 +2,8 @@ use crate::{db_get, entities::*, pool::Db};
 use rocket::{http::Status, serde::json::Json};
 use sea_orm_rocket::Connection;
 
+use rocket::form::Form;
+
 #[get("/get_ftp_configuration/<id_type>/<id>")]
 pub async fn get_ftp_configuration(
     conn: Connection<'_, Db>,
@@ -51,6 +53,43 @@ pub async fn get_server(
         _ => Err(Status::BadRequest),
     };
 }
+
+// this might be an optimization, not sure tho
+
+// #[get("/get_plots")]
+// pub async fn get_plots(
+//     conn: Connection<'_, Db>,
+// ) -> Result<Json<Vec<plotsystem_plots::Model>>, Status> {
+//     let db = conn.into_inner();
+
+//     return Ok(Json(db_get::plot::all(db).await));
+// }
+
+#[get("/get_plots?<status>&<pasted>&<limit>")]
+pub async fn get_plots(
+    conn: Connection<'_, Db>,
+    status: Option<crate::entities::sea_orm_active_enums::Status>,
+    pasted: Option<bool>,
+    limit: Option<u32>,
+) -> Result<Json<Vec<plotsystem_plots::Model>>, Status> {
+    let db = conn.into_inner();
+
+    return Ok(Json(
+        db_get::plot::filtered(db, status, pasted, limit).await,
+    ));
+}
+
+// cant get this to work rn but probably isn't even needed
+
+// #[get("/vec_enum?<statuses>")]
+// pub async fn vec_enum(
+//     statuses: Option<Vec<crate::entities::sea_orm_active_enums::Status>>,
+// ) -> Result<String, Status> {
+//     return match statuses {
+//         Some(vec) => Ok(format!("vec: {:#?}", vec)),
+//         None => Err(Status::BadRequest),
+//     };
+// }
 
 #[get("/<bytes>")]
 pub async fn byte_arr(bytes: String) -> Status {
