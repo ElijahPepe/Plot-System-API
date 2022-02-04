@@ -11,6 +11,8 @@ mod db_get;
 
 mod routes;
 
+mod auth;
+
 #[launch]
 fn rocket() -> _ {
     rocket::build().attach(Db::init()).mount(
