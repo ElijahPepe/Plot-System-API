@@ -93,9 +93,13 @@ pub async fn get_plots(
 
 #[get("/<bytes>")]
 pub async fn byte_arr(bytes: String) -> Status {
-    if bytes.as_bytes() == &[112_u8, 105_u8, 112_u8, 112_u8, 101_u8, 110_u8] {
-        return Status::UnavailableForLegalReasons;
-    } else {
-        return Status::NotFound;
-    }
+    return match bytes.as_bytes() == &[112_u8, 105_u8, 112_u8, 112_u8, 101_u8, 110_u8] {
+        true => Status::ExpectationFailed,
+        false => Status::NotFound,
+    };
+}
+
+#[get("/auth_test")]
+pub async fn auth_test(preflag: crate::auth::request_guards::AuthPreflag) -> Status {
+    Status::Accepted
 }

@@ -25,6 +25,7 @@ fn rocket() -> _ {
             routes::get::get_plots,
             routes::get::byte_arr,
             //routes::get::vec_enum,
+            routes::get::auth_test,
         ],
     )
 }
