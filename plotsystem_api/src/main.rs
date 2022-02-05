@@ -24,6 +24,7 @@ fn rocket() -> _ {
             //routes::get::vec_enum,
             routes::get::auth_test,
             routes::post::add_plot,
+            routes::put::set_pasted,
         ],
     )
 }

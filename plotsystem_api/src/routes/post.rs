@@ -1,5 +1,5 @@
-use crate::{db_get, entities::*, pool::Db};
-use rocket::{data::N, http::Status, serde::json::Json};
+use crate::{entities::*, pool::Db};
+use rocket::{http::Status, serde::json::Json};
 use sea_orm::{ActiveValue::*, EntityTrait};
 use sea_orm_rocket::Connection;
 
@@ -11,6 +11,10 @@ pub async fn add_plot(
     let db = conn.into_inner();
 
     // print!("{:?}", plot_json.id);
+
+    // this horrible chunk of code could probably be optimized using this:
+    // https://www.sea-ql.org/SeaORM/docs/basic-crud/insert/
+    // but I couldn't get it to work, so here we are
 
     let plot = crate::entities::plotsystem_plots::ActiveModel {
         id: NotSet,
