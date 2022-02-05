@@ -5,13 +5,10 @@ use sea_orm_rocket::Database;
 mod pool;
 use pool::Db;
 
-mod entities;
-
-mod db_get;
-
-mod routes;
-
 mod auth;
+mod db_get;
+mod entities;
+mod routes;
 
 #[launch]
 fn rocket() -> _ {
@@ -26,6 +23,7 @@ fn rocket() -> _ {
             routes::get::byte_arr,
             //routes::get::vec_enum,
             routes::get::auth_test,
+            routes::post::add_plot,
         ],
     )
 }

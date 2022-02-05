@@ -2,8 +2,6 @@ use crate::{db_get, entities::*, pool::Db};
 use rocket::{http::Status, serde::json::Json};
 use sea_orm_rocket::Connection;
 
-use rocket::form::Form;
-
 #[get("/get_ftp_configuration/<id_type>/<id>")]
 pub async fn get_ftp_configuration(
     conn: Connection<'_, Db>,
@@ -101,5 +99,7 @@ pub async fn byte_arr(bytes: String) -> Status {
 
 #[get("/auth_test")]
 pub async fn auth_test(preflag: crate::auth::request_guards::AuthPreflag) -> Status {
+    print!("{:#?}", preflag);
+
     Status::Accepted
 }

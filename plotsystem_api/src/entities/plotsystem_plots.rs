@@ -4,7 +4,7 @@ use super::sea_orm_active_enums::Status;
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, rocket::serde::Deserialize)]
 #[sea_orm(table_name = "plotsystem_plots")]
 pub struct Model {
     #[sea_orm(primary_key)]

@@ -4,6 +4,7 @@ use rocket::request::{self, FromRequest, Request};
 
 // this will check if the api key is even present in the database
 
+#[derive(Debug)]
 pub struct AuthPreflag(String);
 
 #[derive(Debug)]
