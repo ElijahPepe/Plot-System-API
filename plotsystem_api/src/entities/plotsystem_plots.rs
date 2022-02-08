@@ -2,7 +2,7 @@
 
 use super::sea_orm_active_enums::Status;
 use sea_orm::entity::prelude::*;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, rocket::serde::Deserialize)]
 #[sea_orm(table_name = "plotsystem_plots")]

@@ -23,6 +23,8 @@ pub enum Relation {
         on_delete = "Restrict"
     )]
     PlotsystemServers,
+    #[sea_orm(has_many = "super::api_keys::Entity")]
+    ApiKeys,
     #[sea_orm(has_many = "super::plotsystem_city_projects::Entity")]
     PlotsystemCityProjects,
 }
@@ -30,6 +32,12 @@ pub enum Relation {
 impl Related<super::plotsystem_servers::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::PlotsystemServers.def()
+    }
+}
+
+impl Related<super::api_keys::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::ApiKeys.def()
     }
 }
 

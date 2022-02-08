@@ -2,6 +2,7 @@
 
 pub mod prelude;
 
+pub mod api_keys;
 pub mod plotsystem_builders;
 pub mod plotsystem_city_projects;
 pub mod plotsystem_countries;
