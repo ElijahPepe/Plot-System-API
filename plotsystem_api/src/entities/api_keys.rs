@@ -11,7 +11,7 @@ pub struct Model {
     #[sea_orm(unique)]
     pub name: String,
     pub country_id: i32,
-    pub created_at: DateTime,
+    pub created_at: DateTimeWithTimeZone,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

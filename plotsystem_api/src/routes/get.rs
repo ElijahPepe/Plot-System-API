@@ -98,7 +98,10 @@ pub async fn byte_arr(bytes: String) -> Status {
 }
 
 #[get("/auth_test")]
-pub async fn auth_test(preflag: crate::auth::auth_preflag_request_guard::AuthPreflag) -> Status {
+pub async fn auth_test(
+    conn: Connection<'_, Db>,
+    preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
+) -> Status {
     print!("{:#?}", preflag);
 
     Status::Accepted
