@@ -3,6 +3,8 @@ use rocket::outcome::Outcome;
 use rocket::request::{self, FromRequest, Request};
 use sea_orm_rocket::Connection;
 
+use super::AuthError;
+
 use crate::pool::Db;
 
 // this will check if the api key is even present in the database
@@ -10,16 +12,9 @@ use crate::pool::Db;
 #[derive(Debug)]
 pub struct AuthPreflag(String);
 
-#[derive(Debug)]
-pub enum PreflagError {
-    Missing,
-    Unauthorized,
-}
-
-// #[rocket::async_trait]
 #[rocket::async_trait]
 impl<'r> FromRequest<'r> for AuthPreflag {
-    type Error = PreflagError;
+    type Error = AuthError;
 
     async fn from_request(req: &'r Request<'_>) -> request::Outcome<Self, Self::Error> {
         let key = match req
@@ -29,7 +24,7 @@ impl<'r> FromRequest<'r> for AuthPreflag {
             .get(0)
         {
             Some(key) => key.to_string(),
-            None => return Outcome::Failure((Status::BadRequest, PreflagError::Missing)),
+            None => return Outcome::Failure((Status::BadRequest, AuthError::Missing)),
         };
 
         let db = req
@@ -40,7 +35,7 @@ impl<'r> FromRequest<'r> for AuthPreflag {
 
         return match crate::db_get::api_keys::api_key_exists(db, &key).await {
             true => Outcome::Success(AuthPreflag(key)),
-            false => Outcome::Failure((Status::Unauthorized, PreflagError::Unauthorized)),
+            false => Outcome::Failure((Status::Unauthorized, AuthError::Unauthorized)),
         };
     }
 }
