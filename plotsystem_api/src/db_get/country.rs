@@ -25,3 +25,13 @@ pub async fn by_cp_id(db: &DatabaseConnection, cp_id: i32) -> plotsystem_countri
 
     return country;
 }
+
+pub async fn by_plot_id(db: &DatabaseConnection, plot_id: i32) -> plotsystem_countries::Model {
+    let country_id = super::city_project::by_plot_id(db, plot_id)
+        .await
+        .country_id;
+
+    let country = by_country_id(db, country_id).await;
+
+    return country;
+}

@@ -6,6 +6,7 @@ use sea_orm_rocket::Connection;
 #[post("/add_plot", format = "json", data = "<plot_json>")]
 pub async fn add_plot(
     conn: Connection<'_, Db>,
+    auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
     plot_json: Json<crate::entities::plotsystem_plots::Model>,
 ) -> Status {
     let db = conn.into_inner();

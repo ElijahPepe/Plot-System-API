@@ -21,10 +21,11 @@ fn rocket() -> _ {
             routes::get::get_server,
             routes::get::get_plots,
             routes::get::byte_arr,
-            //routes::get::vec_enum,
-            routes::get::auth_test,
+            // routes::get::vec_enum,
+            // routes::get::auth_test,
             routes::post::add_plot,
             routes::put::set_pasted,
+            // routes::put::auth_put_test,
         ],
     )
 }

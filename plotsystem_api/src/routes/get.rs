@@ -5,6 +5,7 @@ use sea_orm_rocket::Connection;
 #[get("/get_ftp_configuration/<id_type>/<id>")]
 pub async fn get_ftp_configuration(
     conn: Connection<'_, Db>,
+    auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
     id_type: String,
     id: i32,
 ) -> Result<Json<plotsystem_ftp_configurations::Model>, Status> {
@@ -21,6 +22,7 @@ pub async fn get_ftp_configuration(
 #[get("/get_city_project/<id>")]
 pub async fn get_city_project(
     conn: Connection<'_, Db>,
+    auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
     id: i32,
 ) -> Result<Json<plotsystem_city_projects::Model>, Status> {
     let db = conn.into_inner();
@@ -31,6 +33,7 @@ pub async fn get_city_project(
 #[get("/get_city_projects")]
 pub async fn get_city_projects(
     conn: Connection<'_, Db>,
+    auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
 ) -> Result<Json<Vec<plotsystem_city_projects::Model>>, Status> {
     let db = conn.into_inner();
 
@@ -40,6 +43,7 @@ pub async fn get_city_projects(
 #[get("/get_server/<id_type>/<id>")]
 pub async fn get_server(
     conn: Connection<'_, Db>,
+    auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
     id_type: String,
     id: i32,
 ) -> Result<Json<plotsystem_servers::Model>, Status> {
@@ -66,6 +70,7 @@ pub async fn get_server(
 #[get("/get_plots?<status>&<pasted>&<limit>")]
 pub async fn get_plots(
     conn: Connection<'_, Db>,
+    auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
     status: Option<crate::entities::sea_orm_active_enums::Status>,
     pasted: Option<bool>,
     limit: Option<u32>,
@@ -98,8 +103,10 @@ pub async fn byte_arr(bytes: String) -> Status {
 }
 
 #[get("/auth_test")]
-pub async fn auth_test(preflag: crate::auth::auth_preflag_request_guard::AuthPreflag) -> Status {
-    print!("{:#?}", preflag);
+pub async fn auth_test(
+    auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
+) -> Status {
+    print!("{:#?}", auth_preflag);
 
     Status::Accepted
 }
