@@ -7,7 +7,7 @@ use sea_orm_rocket::Connection;
 pub async fn set_pasted(
     conn: Connection<'_, Db>,
     auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
-    auth: crate::auth::auth_put_request_guard::AuthPutGuard,
+    auth: crate::auth::auth_put_plot_request_guard::AuthPutGuard,
     plot_id: i32,
     pasted: i8,
 ) -> Status {
@@ -27,7 +27,7 @@ pub async fn set_pasted(
 #[get("/auth_put_test/<id>")]
 pub async fn auth_put_test(
     id: i32,
-    auth: crate::auth::auth_put_request_guard::AuthPutGuard,
+    auth: crate::auth::auth_put_plot_request_guard::AuthPutGuard,
 ) -> Status {
     print!("{:#?}", auth);
 

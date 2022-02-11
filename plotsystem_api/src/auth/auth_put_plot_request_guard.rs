@@ -45,9 +45,9 @@ impl<'r> FromRequest<'r> for AuthPutGuard {
 
         print!("{:#?}", plot_id);
 
-        let api_keys = crate::db_get::api_keys::by_plot_id(db, plot_id).await;
+        let authorized_api_keys = crate::db_get::api_keys::by_plot_id(db, plot_id).await;
 
-        return match api_keys
+        return match authorized_api_keys
             .iter()
             .filter(|k| k.api_key == api_key)
             .collect::<Vec<&crate::entities::api_keys::Model>>()

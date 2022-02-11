@@ -41,3 +41,15 @@ pub async fn by_plot_id(db: &DatabaseConnection, plot_id: i32) -> Vec<api_keys::
 
     return api_keys;
 }
+
+pub async fn by_cp_id(db: &DatabaseConnection, cp_id: i32) -> Vec<api_keys::Model> {
+    let country_id = super::country::by_cp_id(db, cp_id).await.id;
+
+    let api_keys = ApiKeys::find()
+        .filter(api_keys::Column::CountryId.eq(country_id))
+        .all(db)
+        .await
+        .unwrap();
+
+    return api_keys;
+}

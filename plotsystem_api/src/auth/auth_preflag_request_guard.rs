@@ -10,7 +10,7 @@ use crate::pool::Db;
 // this will check if the api key is even present in the database
 
 #[derive(Debug)]
-pub struct AuthPreflag(String);
+pub struct AuthPreflag(pub String);
 
 #[rocket::async_trait]
 impl<'r> FromRequest<'r> for AuthPreflag {

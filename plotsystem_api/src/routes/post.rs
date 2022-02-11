@@ -11,32 +11,47 @@ pub async fn add_plot(
 ) -> Status {
     let db = conn.into_inner();
 
-    // print!("{:?}", plot_json.id);
+    let crate::auth::auth_preflag_request_guard::AuthPreflag(api_key) = auth_preflag;
 
-    // this horrible chunk of code could probably be optimized using this:
-    // https://www.sea-ql.org/SeaORM/docs/basic-crud/insert/
-    // but I couldn't get it to work, so here we are
+    let authorized_api_keys =
+        crate::db_get::api_keys::by_cp_id(db, plot_json.city_project_id).await;
 
-    let plot = crate::entities::plotsystem_plots::ActiveModel {
-        id: NotSet,
-        city_project_id: Set(plot_json.city_project_id.to_owned()),
-        difficulty_id: Set(plot_json.difficulty_id.to_owned()),
-        review_id: Set(plot_json.review_id.to_owned()),
-        owner_uuid: Set(plot_json.owner_uuid.to_owned()),
-        member_uuids: Set(plot_json.member_uuids.to_owned()),
-        status: Set(plot_json.status.to_owned()),
-        mc_coordinates: Set(plot_json.mc_coordinates.to_owned()),
-        score: Set(plot_json.score.to_owned()),
-        last_activity: Set(plot_json.last_activity.to_owned()),
-        create_date: Set(plot_json.create_date.to_owned()),
-        create_player: Set(plot_json.create_player.to_owned()),
-        pasted: Set(plot_json.pasted.to_owned()),
-    };
+    match authorized_api_keys
+        .iter()
+        .filter(|k| k.api_key == api_key)
+        .collect::<Vec<&crate::entities::api_keys::Model>>()
+        .len()
+    {
+        0 => return Status::Unauthorized,
+        _ => {
+            // print!("{:?}", plot_json.id);
 
-    print!("plot: {:#?}", plot_json);
+            // this horrible chunk of code could probably be optimized using this:
+            // https://www.sea-ql.org/SeaORM/docs/basic-crud/insert/
+            // but I couldn't get it to work, so here we are
 
-    return match plotsystem_plots::Entity::insert(plot).exec(db).await {
-        Ok(_) => Status::Ok,
-        Err(_) => Status::InternalServerError,
+            let plot = crate::entities::plotsystem_plots::ActiveModel {
+                id: NotSet,
+                city_project_id: Set(plot_json.city_project_id.to_owned()),
+                difficulty_id: Set(plot_json.difficulty_id.to_owned()),
+                review_id: Set(plot_json.review_id.to_owned()),
+                owner_uuid: Set(plot_json.owner_uuid.to_owned()),
+                member_uuids: Set(plot_json.member_uuids.to_owned()),
+                status: Set(plot_json.status.to_owned()),
+                mc_coordinates: Set(plot_json.mc_coordinates.to_owned()),
+                score: Set(plot_json.score.to_owned()),
+                last_activity: Set(plot_json.last_activity.to_owned()),
+                create_date: Set(plot_json.create_date.to_owned()),
+                create_player: Set(plot_json.create_player.to_owned()),
+                pasted: Set(plot_json.pasted.to_owned()),
+            };
+
+            print!("plot: {:#?}", plot_json);
+
+            return match plotsystem_plots::Entity::insert(plot).exec(db).await {
+                Ok(_) => Status::Ok,
+                Err(_) => Status::InternalServerError,
+            };
+        }
     };
 }
