@@ -23,13 +23,3 @@ pub async fn set_pasted(
         Err(_) => Status::InternalServerError,
     };
 }
-
-#[get("/auth_put_test/<id>")]
-pub async fn auth_put_test(
-    id: i32,
-    auth: crate::auth::auth_put_plot_request_guard::AuthPutGuard,
-) -> Status {
-    print!("{:#?}", auth);
-
-    Status::Accepted
-}

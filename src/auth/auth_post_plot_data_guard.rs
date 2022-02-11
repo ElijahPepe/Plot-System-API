@@ -13,7 +13,7 @@ enum Err {
     No,
 }
 
-// Implementing this would be the correct method, but it seems unneccesarily complex. For now I will go with the easy route.
+// Implementing this would be the correct method, but it seems unnecessarily complex. For now I will go with the easy route.
 // Implements this in the future.
 
 #[rocket::async_trait]

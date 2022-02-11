@@ -46,10 +46,3 @@ pub async fn filtered(
 
     return plots_filtered.unwrap();
 }
-
-// ==================
-// this might introduce concurrency issues, but cinnazeyy said to do it this way, so not my problem 🤷‍♂️
-//
-// thinking about it, this is a very terrible idea, and I will not implement it for now.
-// ==================
-//pub async fn get_lowest_id(db: &DatabaseConnection) -> i32 {}
