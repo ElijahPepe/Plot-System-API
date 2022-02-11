@@ -3,8 +3,8 @@ use rocket::{http::Status, serde::json::Json};
 use sea_orm::{ActiveValue::*, EntityTrait};
 use sea_orm_rocket::Connection;
 
-#[post("/add_plot", format = "json", data = "<plot_json>")]
-pub async fn add_plot(
+#[post("/plot/add", format = "json", data = "<plot_json>")]
+pub async fn plot_add(
     conn: Connection<'_, Db>,
     auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
     plot_json: Json<crate::entities::plotsystem_plots::Model>,
