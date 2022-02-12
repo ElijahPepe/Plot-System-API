@@ -17,7 +17,7 @@ pub async fn by_plot_id(db: &DatabaseConnection, plot_id: i32) -> plotsystem_plo
 
 pub async fn filtered(
     db: &DatabaseConnection,
-    status: Option<crate::entities::sea_orm_active_enums::Status>,
+    status: Option<sea_orm_active_enums::Status>,
     pasted: Option<bool>,
     limit: Option<u32>,
 ) -> Vec<plotsystem_plots::Model> {
