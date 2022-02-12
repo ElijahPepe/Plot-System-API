@@ -60,7 +60,7 @@ pub async fn get_server(
 pub async fn get_plots(
     conn: Connection<'_, Db>,
     _auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
-    status: Option<crate::entities::sea_orm_active_enums::Status>,
+    status: Option<sea_orm_active_enums::Status>,
     pasted: Option<bool>,
     limit: Option<u32>,
 ) -> Result<Json<Vec<plotsystem_plots::Model>>, Status> {

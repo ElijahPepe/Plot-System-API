@@ -7,7 +7,7 @@ use sea_orm_rocket::Connection;
 pub async fn plot_add(
     conn: Connection<'_, Db>,
     auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
-    plot_json: Json<crate::entities::plotsystem_plots::Model>,
+    plot_json: Json<plotsystem_plots::Model>,
 ) -> Status {
     let db = conn.into_inner();
 
@@ -19,7 +19,7 @@ pub async fn plot_add(
     match authorized_api_keys
         .iter()
         .filter(|k| k.api_key == api_key)
-        .collect::<Vec<&crate::entities::api_keys::Model>>()
+        .collect::<Vec<&api_keys::Model>>()
         .len()
     {
         0 => return Status::Unauthorized,
@@ -30,7 +30,7 @@ pub async fn plot_add(
             // https://www.sea-ql.org/SeaORM/docs/basic-crud/insert/
             // but I couldn't get it to work, so here we are
 
-            let plot = crate::entities::plotsystem_plots::ActiveModel {
+            let plot = plotsystem_plots::ActiveModel {
                 id: NotSet,
                 city_project_id: Set(plot_json.city_project_id.to_owned()),
                 difficulty_id: Set(plot_json.difficulty_id.to_owned()),
