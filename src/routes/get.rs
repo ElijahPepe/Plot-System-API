@@ -56,6 +56,17 @@ pub async fn get_server(
     };
 }
 
+#[get("/get_plot/<plot_id>")]
+pub async fn get_plot(
+    conn: Connection<'_, Db>,
+    _auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
+    plot_id: i32,
+) -> Result<Json<plotsystem_plots::Model>, Status> {
+    let db = conn.into_inner();
+
+    return Ok(Json(db_get::plot::by_plot_id(db, plot_id).await));
+}
+
 #[get("/get_plots?<status>&<pasted>&<limit>")]
 pub async fn get_plots(
     conn: Connection<'_, Db>,
