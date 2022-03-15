@@ -19,6 +19,7 @@ fn rocket() -> _ {
             routes::get::get_city_project,
             routes::get::get_city_projects,
             routes::get::get_server,
+            routes::get::get_plot,
             routes::get::get_plots,
             routes::get::byte_arr,
             routes::post::plot_add,
