@@ -36,7 +36,7 @@ impl<'r> FromRequest<'r> for AuthPutGuard {
 
         let plot_id = match req.uri().path().raw_segments().last() {
             Some(n) => n,
-            None => return Outcome::Failure((Status::Unauthorized, AuthError::Unauthorized)),
+            None => return Outcome::Failure((Status::BadRequest, AuthError::Missing)),
         }
         .to_string()
         .to_owned()

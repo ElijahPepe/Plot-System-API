@@ -42,3 +42,9 @@ pub async fn by_cp_id(db: &DatabaseConnection, cp_id: i32) -> Vec<api_keys::Mode
 
     return api_keys;
 }
+
+pub async fn by_server_id(db: &DatabaseConnection, server_id: i32) -> Vec<api_keys::Model> {
+    let country_ids = super::country::by_server_id(db, server_id).await;
+
+    return None;
+}

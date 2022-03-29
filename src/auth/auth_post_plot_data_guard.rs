@@ -1,6 +1,5 @@
 use rocket::data::{self, ByteUnit, Data, FromData, ToByteUnit};
 use rocket::request::Request;
-use rocket_dyn_templates::tera::Test;
 
 struct TestData {
     a: i32,
