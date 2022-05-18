@@ -19,7 +19,7 @@ pub async fn plot_add(
     match authorized_api_keys
         .iter()
         .filter(|k| k.api_key == api_key)
-        .collect::<Vec<&api_keys::Model>>()
+        .collect::<Vec<&plotsystem_api_keys::Model>>()
         .len()
     {
         0 => return Status::Unauthorized,
@@ -44,6 +44,7 @@ pub async fn plot_add(
                 create_date: Set(plot_json.create_date.to_owned()),
                 create_player: Set(plot_json.create_player.to_owned()),
                 pasted: Set(plot_json.pasted.to_owned()),
+                outline: Set(plot_json.outline.to_owned()),
             };
 
             print!("plot: {:#?}", plot_json);

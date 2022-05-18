@@ -11,22 +11,47 @@ pub struct Model {
     pub name: String,
     pub score: i32,
     pub completed_plots: i32,
-    pub first_slot: Option<i32>,
-    pub second_slot: Option<i32>,
-    pub third_slot: Option<i32>,
+    pub first_slot_id: Option<i32>,
+    pub second_slot_id: Option<i32>,
+    pub third_slot_id: Option<i32>,
+    pub lang: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_many = "super::plotsystem_plots::Entity")]
-    PlotsystemPlots,
+    #[sea_orm(
+        belongs_to = "super::plotsystem_plots::Entity",
+        from = "Column::FirstSlotId",
+        to = "super::plotsystem_plots::Column::Id",
+        on_update = "Restrict",
+        on_delete = "Restrict"
+    )]
+    PlotsystemPlots3,
+    #[sea_orm(
+        belongs_to = "super::plotsystem_plots::Entity",
+        from = "Column::SecondSlotId",
+        to = "super::plotsystem_plots::Column::Id",
+        on_update = "Restrict",
+        on_delete = "Restrict"
+    )]
+    PlotsystemPlots2,
+    #[sea_orm(
+        belongs_to = "super::plotsystem_plots::Entity",
+        from = "Column::ThirdSlotId",
+        to = "super::plotsystem_plots::Column::Id",
+        on_update = "Restrict",
+        on_delete = "Restrict"
+    )]
+    PlotsystemPlots1,
+    #[sea_orm(has_many = "super::plotsystem_builder_is_reviewer::Entity")]
+    PlotsystemBuilderIsReviewer,
     #[sea_orm(has_many = "super::plotsystem_reviews::Entity")]
     PlotsystemReviews,
 }
 
-impl Related<super::plotsystem_plots::Entity> for Entity {
+impl Related<super::plotsystem_builder_is_reviewer::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::PlotsystemPlots.def()
+        Relation::PlotsystemBuilderIsReviewer.def()
     }
 }
 

@@ -4,14 +4,12 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
-#[sea_orm(table_name = "api_keys")]
+#[sea_orm(table_name = "plotsystem_buildteam_has_countries")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub api_key: String,
-    #[sea_orm(unique)]
-    pub name: String,
+    pub id: i32,
     pub country_id: i32,
-    pub created_at: DateTimeWithTimeZone,
+    pub buildteam_id: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -24,11 +22,25 @@ pub enum Relation {
         on_delete = "Restrict"
     )]
     PlotsystemCountries,
+    #[sea_orm(
+        belongs_to = "super::plotsystem_buildteams::Entity",
+        from = "Column::BuildteamId",
+        to = "super::plotsystem_buildteams::Column::Id",
+        on_update = "Restrict",
+        on_delete = "Restrict"
+    )]
+    PlotsystemBuildteams,
 }
 
 impl Related<super::plotsystem_countries::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::PlotsystemCountries.def()
+    }
+}
+
+impl Related<super::plotsystem_buildteams::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::PlotsystemBuildteams.def()
     }
 }
 

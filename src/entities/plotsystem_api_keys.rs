@@ -4,24 +4,22 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
-#[sea_orm(table_name = "plotsystem_difficulties")]
+#[sea_orm(table_name = "plotsystem_api_keys")]
 pub struct Model {
-    #[sea_orm(primary_key)]
-    pub id: i32,
-    pub name: String,
-    pub multiplier: f64,
-    pub score_requirement: i32,
+    #[sea_orm(primary_key, auto_increment = false)]
+    pub api_key: String,
+    pub created_at: DateTime,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_many = "super::plotsystem_plots::Entity")]
-    PlotsystemPlots,
+    #[sea_orm(has_many = "super::plotsystem_buildteams::Entity")]
+    PlotsystemBuildteams,
 }
 
-impl Related<super::plotsystem_plots::Entity> for Entity {
+impl Related<super::plotsystem_buildteams::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::PlotsystemPlots.def()
+        Relation::PlotsystemBuildteams.def()
     }
 }
 

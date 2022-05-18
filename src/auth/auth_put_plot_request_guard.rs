@@ -50,7 +50,7 @@ impl<'r> FromRequest<'r> for AuthPutGuard {
         return match authorized_api_keys
             .iter()
             .filter(|k| k.api_key == api_key)
-            .collect::<Vec<&crate::entities::api_keys::Model>>()
+            .collect::<Vec<&crate::entities::plotsystem_api_keys::Model>>()
             .len()
         {
             0 => Outcome::Failure((Status::Unauthorized, AuthError::Unauthorized)),

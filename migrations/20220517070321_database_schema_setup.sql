@@ -109,7 +109,7 @@ CREATE TABLE `plotsystem_plots` (
   `difficulty_id` INT NOT NULL,
   `create_player` VARCHAR(36) NOT NULL,
   `owner_uuid` VARCHAR(36),
-  `review_id` INT NOT NULL,
+  `review_id` INT,
   `member_uuids` VARCHAR(110),
   `status` ENUM('unclaimed', 'unfinished', 'unreviewed', 'finished', 'completed') NOT NULL,
   `mc_coordinates` VARCHAR(255) NOT NULL,
