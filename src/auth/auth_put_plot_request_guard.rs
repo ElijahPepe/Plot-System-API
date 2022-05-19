@@ -36,13 +36,13 @@ impl<'r> FromRequest<'r> for AuthPutGuard {
 
         let plot_id = match req.uri().path().raw_segments().last() {
             Some(n) => n,
-            None => return Outcome::Failure((Status::Unauthorized, AuthError::Unauthorized)),
+            None => return Outcome::Failure((Status::BadRequest, AuthError::Missing)),
         }
         .to_string()
         .to_owned()
         .parse::<i32>()
         .unwrap();
-        return match crate::db_get::api_keys::plot_related_to_api_key(db, api_key, plot_id).await {
+        return match crate::db_get::api_keys::plot_related_to_api_key(db, &api_key, plot_id).await {
             false => Outcome::Failure((Status::Unauthorized, AuthError::Unauthorized)),
             true => Outcome::Success(AuthPutGuard("Stuff".to_string())),
         };

@@ -17,7 +17,7 @@ impl<'r> FromRequest<'r> for AuthPreflag {
     type Error = AuthError;
 
     async fn from_request(req: &'r Request<'_>) -> request::Outcome<Self, Self::Error> {
-        let key = match req
+        let api_key = match req
             .headers()
             .get("authorization")
             .collect::<Vec<&str>>()
@@ -33,8 +33,8 @@ impl<'r> FromRequest<'r> for AuthPreflag {
             .unwrap()
             .into_inner();
 
-        return match crate::db_get::api_keys::api_key_exists(db, &key).await {
-            true => Outcome::Success(AuthPreflag(key)),
+        return match crate::db_get::api_keys::api_key_exists(db, &api_key).await {
+            true => Outcome::Success(AuthPreflag(api_key)),
             false => Outcome::Failure((Status::Unauthorized, AuthError::Unauthorized)),
         };
     }

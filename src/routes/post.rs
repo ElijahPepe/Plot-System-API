@@ -23,7 +23,7 @@ pub async fn plot_add(
 
     let crate::auth::auth_preflag_request_guard::AuthPreflag(api_key) = auth_preflag;
 
-    match crate::db_get::api_keys::cp_related_to_api_key(db, api_key, plot_json.city_project_id)
+    match crate::db_get::api_keys::cp_related_to_api_key(db, &api_key, plot_json.city_project_id)
         .await
     {
         true => {
