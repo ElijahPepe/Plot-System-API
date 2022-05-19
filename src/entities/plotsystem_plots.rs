@@ -2,25 +2,27 @@
 
 use super::sea_orm_active_enums::Status;
 use sea_orm::entity::prelude::*;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, rocket::serde::Deserialize)]
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "plotsystem_plots")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     pub city_project_id: i32,
     pub difficulty_id: i32,
-    pub review_id: Option<i32>,
+    pub create_player: String,
     pub owner_uuid: Option<String>,
+    pub review_id: Option<i32>,
     pub member_uuids: Option<String>,
     pub status: Status,
     pub mc_coordinates: String,
     pub score: Option<i32>,
     pub last_activity: Option<DateTime>,
     pub create_date: DateTime,
-    pub create_player: String,
     pub pasted: i8,
+    #[sea_orm(column_type = "Custom(\"LONGTEXT\".to_owned())", nullable)]
+    pub outline: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -34,13 +36,29 @@ pub enum Relation {
     )]
     PlotsystemCityProjects,
     #[sea_orm(
+        belongs_to = "super::plotsystem_difficulties::Entity",
+        from = "Column::DifficultyId",
+        to = "super::plotsystem_difficulties::Column::Id",
+        on_update = "Restrict",
+        on_delete = "Restrict"
+    )]
+    PlotsystemDifficulties,
+    #[sea_orm(
+        belongs_to = "super::plotsystem_builders::Entity",
+        from = "Column::CreatePlayer",
+        to = "super::plotsystem_builders::Column::Uuid",
+        on_update = "Restrict",
+        on_delete = "Restrict"
+    )]
+    PlotsystemBuilders2,
+    #[sea_orm(
         belongs_to = "super::plotsystem_builders::Entity",
         from = "Column::OwnerUuid",
         to = "super::plotsystem_builders::Column::Uuid",
         on_update = "Restrict",
         on_delete = "Restrict"
     )]
-    PlotsystemBuilders,
+    PlotsystemBuilders1,
     #[sea_orm(
         belongs_to = "super::plotsystem_reviews::Entity",
         from = "Column::ReviewId",
@@ -49,14 +67,6 @@ pub enum Relation {
         on_delete = "Restrict"
     )]
     PlotsystemReviews,
-    #[sea_orm(
-        belongs_to = "super::plotsystem_difficulties::Entity",
-        from = "Column::DifficultyId",
-        to = "super::plotsystem_difficulties::Column::Id",
-        on_update = "Restrict",
-        on_delete = "Restrict"
-    )]
-    PlotsystemDifficulties,
 }
 
 impl Related<super::plotsystem_city_projects::Entity> for Entity {
@@ -65,21 +75,15 @@ impl Related<super::plotsystem_city_projects::Entity> for Entity {
     }
 }
 
-impl Related<super::plotsystem_builders::Entity> for Entity {
+impl Related<super::plotsystem_difficulties::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::PlotsystemBuilders.def()
+        Relation::PlotsystemDifficulties.def()
     }
 }
 
 impl Related<super::plotsystem_reviews::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::PlotsystemReviews.def()
-    }
-}
-
-impl Related<super::plotsystem_difficulties::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::PlotsystemDifficulties.def()
     }
 }
 

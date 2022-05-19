@@ -11,8 +11,6 @@ pub async fn by_server_id(db: &DatabaseConnection, server_id: i32) -> plotsystem
         .unwrap()
         .into();
 
-    println!("ftp id is {:?}", server);
-
     return server;
 }
 
