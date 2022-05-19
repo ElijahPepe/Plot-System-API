@@ -6,6 +6,7 @@ use sea_orm_rocket::Connection;
 pub async fn get_ftp_configuration(
     conn: Connection<'_, Db>,
     _auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
+    _auth: crate::auth::auth_get_ftp_config_guard::FtpAuth,
     id_type: String,
     id: i32,
 ) -> Result<Json<plotsystem_ftp_configurations::Model>, Status> {

@@ -2,6 +2,8 @@ pub mod auth_get_ftp_config_guard;
 pub mod auth_preflag_request_guard;
 pub mod auth_put_plot_request_guard;
 
+use rocket::request::Request;
+
 #[derive(Debug)]
 pub enum AuthError {
     Missing,
