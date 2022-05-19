@@ -1,8 +1,6 @@
 use std::process::exit;
 
-use sea_orm::{
-    Condition, DatabaseConnection, DbBackend, JoinType, QueryFilter, QuerySelect, QueryTrait,
-};
+use sea_orm::{Condition, DatabaseConnection, JoinType, QueryFilter, QuerySelect};
 
 use crate::entities::{prelude::*, *};
 
