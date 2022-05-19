@@ -1,5 +1,4 @@
 -- Add migration script here
-
 CREATE TABLE `plotsystem_ftp_configurations` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `schematic_path` VARCHAR(255),
@@ -10,7 +9,6 @@ CREATE TABLE `plotsystem_ftp_configurations` (
   `password` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`)
 );
-
 CREATE TABLE `plotsystem_servers` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `ftp_configuration_id` INT,
@@ -18,33 +16,35 @@ CREATE TABLE `plotsystem_servers` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`ftp_configuration_id`) REFERENCES `plotsystem_ftp_configurations`(`id`)
 );
-
 CREATE TABLE `plotsystem_countries` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `server_id` INT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `head_id` VARCHAR(10),
-  `continent` ENUM('Europe', 'Asia', 'Africa', 'Oceania', 'South America', 'North America') NOT NULL,
+  `continent` ENUM(
+    'Europe',
+    'Asia',
+    'Africa',
+    'Oceania',
+    'South America',
+    'North America'
+  ) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`server_id`) REFERENCES `plotsystem_servers`(`id`)
 );
-
 CREATE TABLE `plotsystem_api_keys` (
   `id` INT NOT NULL AUTO_INCREMENT,
-	`api_key` VARCHAR(32) NOT NULL,
-	`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY (`id`)
+  `api_key` VARCHAR(32) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 );
-
-
 CREATE TABLE `plotsystem_buildteams` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,	
+  `name` VARCHAR(45) NOT NULL,
   `api_key_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`api_key_id`) REFERENCES `plotsystem_api_keys`(`id`)
 );
-
 CREATE TABLE `plotsystem_buildteam_has_countries` (
   `id` INT NOT NULL,
   `country_id` INT NOT NULL,
@@ -53,7 +53,6 @@ CREATE TABLE `plotsystem_buildteam_has_countries` (
   FOREIGN KEY (`country_id`) REFERENCES `plotsystem_countries`(`id`),
   FOREIGN KEY (`buildteam_id`) REFERENCES `plotsystem_buildteams`(`id`)
 );
-
 CREATE TABLE `plotsystem_city_projects` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `country_id` INT NOT NULL,
@@ -63,7 +62,6 @@ CREATE TABLE `plotsystem_city_projects` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`country_id`) REFERENCES `plotsystem_countries`(`id`)
 );
-
 CREATE TABLE `plotsystem_builders` (
   `uuid` VARCHAR(36) NOT NULL,
   `name` VARCHAR(16) NOT NULL,
@@ -75,7 +73,6 @@ CREATE TABLE `plotsystem_builders` (
   `lang` VARCHAR(5),
   PRIMARY KEY (`uuid`)
 );
-
 CREATE TABLE `plotsystem_builder_is_reviewer` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `builder_uuid` VARCHAR(36) NOT NULL,
@@ -84,7 +81,6 @@ CREATE TABLE `plotsystem_builder_is_reviewer` (
   FOREIGN KEY (`builder_uuid`) REFERENCES `plotsystem_builders`(`uuid`),
   FOREIGN KEY (`buildteam_id`) REFERENCES `plotsystem_buildteams`(`id`)
 );
-
 CREATE TABLE `plotsystem_reviews` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `reviewer_uuid` VARCHAR(36) NOT NULL,
@@ -95,7 +91,6 @@ CREATE TABLE `plotsystem_reviews` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`reviewer_uuid`) REFERENCES `plotsystem_builders`(`uuid`)
 );
-
 CREATE TABLE `plotsystem_difficulties` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
@@ -103,7 +98,6 @@ CREATE TABLE `plotsystem_difficulties` (
   `score_requirement` INT NOT NULL,
   PRIMARY KEY (`id`)
 );
-
 CREATE TABLE `plotsystem_plots` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `city_project_id` INT NOT NULL,
@@ -112,7 +106,13 @@ CREATE TABLE `plotsystem_plots` (
   `owner_uuid` VARCHAR(36),
   `review_id` INT,
   `member_uuids` VARCHAR(110),
-  `status` ENUM('unclaimed', 'unfinished', 'unreviewed', 'finished', 'completed') NOT NULL,
+  `status` ENUM(
+    'unclaimed',
+    'unfinished',
+    'unreviewed',
+    'finished',
+    'completed'
+  ) NOT NULL,
   `mc_coordinates` VARCHAR(255) NOT NULL,
   `score` INT,
   `last_activity` DATETIME,
@@ -126,9 +126,7 @@ CREATE TABLE `plotsystem_plots` (
   FOREIGN KEY (`owner_uuid`) REFERENCES `plotsystem_builders`(`uuid`),
   FOREIGN KEY (`review_id`) REFERENCES `plotsystem_reviews`(`id`)
 );
-
-
 ALTER TABLE `plotsystem_builders`
-  ADD FOREIGN KEY (`first_slot_id`) REFERENCES `plotsystem_plots`(`id`),
+ADD FOREIGN KEY (`first_slot_id`) REFERENCES `plotsystem_plots`(`id`),
   ADD FOREIGN KEY (`second_slot_id`) REFERENCES `plotsystem_plots`(`id`),
   ADD FOREIGN KEY (`third_slot_id`) REFERENCES `plotsystem_plots`(`id`);

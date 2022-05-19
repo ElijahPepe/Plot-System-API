@@ -11,6 +11,7 @@ pub struct Model {
     pub schematic_path: Option<String>,
     pub address: String,
     pub port: i32,
+    #[sea_orm(column_name = "isSFTP")]
     pub is_sftp: i8,
     pub username: String,
     pub password: String,

@@ -42,9 +42,6 @@ impl<'r> FromRequest<'r> for AuthPutGuard {
         .to_owned()
         .parse::<i32>()
         .unwrap();
-
-        print!("{:#?}", plot_id);
-
         return match crate::db_get::api_keys::plot_related_to_api_key(db, api_key, plot_id).await {
             false => Outcome::Failure((Status::Unauthorized, AuthError::Unauthorized)),
             true => Outcome::Success(AuthPutGuard("Stuff".to_string())),

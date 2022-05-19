@@ -8,8 +8,6 @@ pub async fn by_ftp_id(
     db: &DatabaseConnection,
     ftp_id: i32,
 ) -> plotsystem_ftp_configurations::Model {
-    println!("{}", ftp_id);
-
     let ftp = PlotsystemFtpConfigurations::find_by_id(ftp_id)
         .one(db)
         .await
@@ -28,8 +26,6 @@ pub async fn by_server_id(
         .await
         .ftp_configuration_id
         .unwrap();
-
-    println!("ftp id is {}", ftp_id);
 
     let ftp = by_ftp_id(db, ftp_id).await;
 

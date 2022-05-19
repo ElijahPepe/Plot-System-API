@@ -29,19 +29,19 @@ pub async fn cp_related_to_api_key(db: &DatabaseConnection, api_key: String, cp_
     let matches = plotsystem_api_keys::Entity::find()
         .join(
             JoinType::InnerJoin,
-            plotsystem_buildteams::Relation::PlotsystemApiKeys.def(),
+            plotsystem_api_keys::Relation::PlotsystemBuildteams.def(),
         )
         .join(
             JoinType::InnerJoin,
-            plotsystem_buildteam_has_countries::Relation::PlotsystemBuildteams.def(),
+            plotsystem_buildteams::Relation::PlotsystemBuildteamHasCountries.def(),
         )
         .join(
             JoinType::InnerJoin,
-            plotsystem_countries::Relation::PlotsystemBuildteamHasCountries.def(),
+            plotsystem_buildteam_has_countries::Relation::PlotsystemCountries.def(),
         )
         .join(
             JoinType::InnerJoin,
-            plotsystem_city_projects::Relation::PlotsystemCountries.def(),
+            plotsystem_countries::Relation::PlotsystemCityProjects.def(),
         )
         .filter(
             Condition::all()
