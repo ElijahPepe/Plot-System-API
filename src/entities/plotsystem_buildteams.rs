@@ -9,15 +9,15 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     pub name: String,
-    pub api_key: String,
+    pub api_key_id: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
         belongs_to = "super::plotsystem_api_keys::Entity",
-        from = "Column::ApiKey",
-        to = "super::plotsystem_api_keys::Column::ApiKey",
+        from = "Column::ApiKeyId",
+        to = "super::plotsystem_api_keys::Column::Id",
         on_update = "Restrict",
         on_delete = "Restrict"
     )]

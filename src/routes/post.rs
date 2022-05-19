@@ -13,19 +13,10 @@ pub async fn plot_add(
 
     let crate::auth::auth_preflag_request_guard::AuthPreflag(api_key) = auth_preflag;
 
-    let authorized_api_keys =
-        crate::db_get::api_keys::by_cp_id(db, plot_json.city_project_id).await;
-
-    match authorized_api_keys
-        .iter()
-        .filter(|k| k.api_key == api_key)
-        .collect::<Vec<&plotsystem_api_keys::Model>>()
-        .len()
+    match crate::db_get::api_keys::cp_related_to_api_key(db, api_key, plot_json.city_project_id)
+        .await
     {
-        0 => return Status::Unauthorized,
-        _ => {
-            // print!("{:?}", plot_json.id);
-
+        true => {
             // this horrible chunk of code could probably be optimized using this:
             // https://www.sea-ql.org/SeaORM/docs/basic-crud/insert/
             // but I couldn't get it to work, so here we are
@@ -49,10 +40,11 @@ pub async fn plot_add(
 
             print!("plot: {:#?}", plot_json);
 
-            return match plotsystem_plots::Entity::insert(plot).exec(db).await {
+            match plotsystem_plots::Entity::insert(plot).exec(db).await {
                 Ok(_) => Status::Ok,
                 Err(_) => Status::InternalServerError,
-            };
+            }
         }
-    };
+        false => Status::Unauthorized,
+    }
 }

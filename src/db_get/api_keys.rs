@@ -1,13 +1,16 @@
 use std::process::exit;
 
-use sea_orm::{DatabaseConnection, QueryFilter};
+use sea_orm::{
+    Condition, DatabaseConnection, DbBackend, JoinType, QueryFilter, QuerySelect, QueryTrait,
+};
 
 use crate::entities::{prelude::*, *};
 
 use sea_orm::entity::*;
 
 pub async fn api_key_exists(db: &DatabaseConnection, api_key: &str) -> bool {
-    return match PlotsystemApiKeys::find_by_id(api_key.to_owned())
+    return match PlotsystemApiKeys::find()
+        .filter(Condition::all().add(plotsystem_api_keys::Column::ApiKey.eq(api_key)))
         .one(db)
         .await
     {
@@ -22,26 +25,76 @@ pub async fn api_key_exists(db: &DatabaseConnection, api_key: &str) -> bool {
     };
 }
 
-pub async fn by_plot_id(db: &DatabaseConnection, plot_id: i32) -> Vec<plotsystem_api_keys::Model> {
-    let country_id = super::country::by_plot_id(db, plot_id).await.id;
-
-    let api_keys = PlotsystemApiKeys::find()
-        .filter(plotsystem_api_keys::Column::CountryId.eq(country_id))
+pub async fn cp_related_to_api_key(db: &DatabaseConnection, api_key: String, cp_id: i32) -> bool {
+    let matches = plotsystem_api_keys::Entity::find()
+        .join(
+            JoinType::InnerJoin,
+            plotsystem_buildteams::Relation::PlotsystemApiKeys.def(),
+        )
+        .join(
+            JoinType::InnerJoin,
+            plotsystem_buildteam_has_countries::Relation::PlotsystemBuildteams.def(),
+        )
+        .join(
+            JoinType::InnerJoin,
+            plotsystem_countries::Relation::PlotsystemBuildteamHasCountries.def(),
+        )
+        .join(
+            JoinType::InnerJoin,
+            plotsystem_city_projects::Relation::PlotsystemCountries.def(),
+        )
+        .filter(
+            Condition::all()
+                .add(plotsystem_api_keys::Column::ApiKey.eq(api_key))
+                .add(plotsystem_city_projects::Column::Id.eq(cp_id)),
+        )
         .all(db)
         .await
         .unwrap();
 
-    return api_keys;
+    match matches.len() {
+        1 => true,
+        _ => false,
+    }
 }
 
-pub async fn by_cp_id(db: &DatabaseConnection, cp_id: i32) -> Vec<plotsystem_api_keys::Model> {
-    let country_id = super::country::by_cp_id(db, cp_id).await.id;
-
-    let plotsystem_api_keys = PlotsystemApiKeys::find()
-        .filter(plotsystem_api_keys::Column::CountryId.eq(country_id))
+pub async fn plot_related_to_api_key(
+    db: &DatabaseConnection,
+    api_key: String,
+    plot_id: i32,
+) -> bool {
+    let matches = plotsystem_api_keys::Entity::find()
+        .join(
+            JoinType::InnerJoin,
+            plotsystem_api_keys::Relation::PlotsystemBuildteams.def(),
+        )
+        .join(
+            JoinType::InnerJoin,
+            plotsystem_buildteams::Relation::PlotsystemBuildteamHasCountries.def(),
+        )
+        .join(
+            JoinType::InnerJoin,
+            plotsystem_buildteam_has_countries::Relation::PlotsystemCountries.def(),
+        )
+        .join(
+            JoinType::InnerJoin,
+            plotsystem_countries::Relation::PlotsystemCityProjects.def(),
+        )
+        .join(
+            JoinType::InnerJoin,
+            plotsystem_city_projects::Relation::PlotsystemPlots.def(),
+        )
+        .filter(
+            Condition::all()
+                .add(plotsystem_api_keys::Column::ApiKey.eq(api_key.to_owned()))
+                .add(plotsystem_plots::Column::Id.eq(plot_id)),
+        )
         .all(db)
         .await
         .unwrap();
 
-    return plotsystem_api_keys;
+    match matches.len() {
+        1 => true,
+        _ => false,
+    }
 }

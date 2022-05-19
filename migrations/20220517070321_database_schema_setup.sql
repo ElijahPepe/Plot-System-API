@@ -30,18 +30,19 @@ CREATE TABLE `plotsystem_countries` (
 );
 
 CREATE TABLE `plotsystem_api_keys` (
+  `id` INT NOT NULL AUTO_INCREMENT,
 	`api_key` VARCHAR(32) NOT NULL,
 	`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY (`api_key`)
+	PRIMARY KEY (`id`)
 );
 
 
 CREATE TABLE `plotsystem_buildteams` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,	
-  `api_key` VARCHAR(32) NOT NULL,
+  `api_key_id` INT NOT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`api_key`) REFERENCES `plotsystem_api_keys`(`api_key`)
+  FOREIGN KEY (`api_key_id`) REFERENCES `plotsystem_api_keys`(`id`)
 );
 
 CREATE TABLE `plotsystem_buildteam_has_countries` (

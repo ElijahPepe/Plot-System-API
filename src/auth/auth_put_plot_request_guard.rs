@@ -45,16 +45,9 @@ impl<'r> FromRequest<'r> for AuthPutGuard {
 
         print!("{:#?}", plot_id);
 
-        let authorized_api_keys = crate::db_get::api_keys::by_plot_id(db, plot_id).await;
-
-        return match authorized_api_keys
-            .iter()
-            .filter(|k| k.api_key == api_key)
-            .collect::<Vec<&crate::entities::plotsystem_api_keys::Model>>()
-            .len()
-        {
-            0 => Outcome::Failure((Status::Unauthorized, AuthError::Unauthorized)),
-            _ => Outcome::Success(AuthPutGuard("Stuff".to_string())),
+        return match crate::db_get::api_keys::plot_related_to_api_key(db, api_key, plot_id).await {
+            false => Outcome::Failure((Status::Unauthorized, AuthError::Unauthorized)),
+            true => Outcome::Success(AuthPutGuard("Stuff".to_string())),
         };
     }
 }

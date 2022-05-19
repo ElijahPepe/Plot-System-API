@@ -17,13 +17,13 @@ INSERT INTO `plotsystem_countries` (`id`, `server_id`, `name`, `head_id`, `conti
 (4, 2, 'Mexico', '1234275681', 'North America'),
 (5, 3, 'California', '1233781923', 'North America');
 
-INSERT INTO `plotsystem_api_keys` (`api_key`, `created_at`) VALUES 
-('hokahsdföachöslasdfhlschlösdaflh', '2020-05-17 14:11:08'),
-('jasöoijöasdapuzhpoi734poi70ß79sd', '2022-06-12 15:01:51');
+INSERT INTO `plotsystem_api_keys` (`id`, `api_key`, `created_at`) VALUES 
+(1, 'mzNvlteU4ak0QW56MX5ynZu8tUtWu1YL', '2020-05-17 14:11:08'),
+(2, 'LWZPajV2S3Cd4aCLpyz4Kl2or88sGCR4', '2022-06-12 15:01:51');
 
-INSERT INTO `plotsystem_buildteams` (`id`, `name`, `api_key`) VALUES
-(1, 'BTE ALPS', 'hokahsdföachöslasdfhlschlösdaflh'),
-(2, 'BTE AMERICA', 'jasöoijöasdapuzhpoi734poi70ß79sd');
+INSERT INTO `plotsystem_buildteams` (`id`, `name`, `api_key_id`) VALUES
+(1, 'BTE ALPS', 1),
+(2, 'BTE AMERICA', 2);
 
 INSERT INTO `plotsystem_buildteam_has_countries` (`id`, `country_id`, `buildteam_id`) VALUES
 (1, 1, 1),

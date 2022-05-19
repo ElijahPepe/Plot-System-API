@@ -13,7 +13,7 @@ pub struct Model {
     pub difficulty_id: i32,
     pub create_player: String,
     pub owner_uuid: Option<String>,
-    pub review_id: i32,
+    pub review_id: Option<i32>,
     pub member_uuids: Option<String>,
     pub status: Status,
     pub mc_coordinates: String,
