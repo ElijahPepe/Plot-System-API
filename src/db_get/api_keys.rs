@@ -1,6 +1,6 @@
 use std::process::exit;
 
-use sea_orm::{Condition, DatabaseConnection, JoinType, QueryFilter, QuerySelect, QueryTrait};
+use sea_orm::{Condition, DatabaseConnection, JoinType, QueryFilter, QuerySelect};
 
 use crate::entities::{prelude::*, *};
 
@@ -18,6 +18,7 @@ pub async fn api_key_exists(db: &DatabaseConnection, api_key: &str) -> bool {
         },
         Err(e) => {
             print!("{:#?}", e);
+            // TODO: FIX THIS
             exit(0)
         }
     };

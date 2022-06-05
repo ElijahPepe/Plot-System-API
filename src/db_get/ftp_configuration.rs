@@ -1,4 +1,4 @@
-use sea_orm::DatabaseConnection;
+use sea_orm::{Condition, DatabaseConnection, JoinType, QueryFilter, QuerySelect};
 
 use crate::entities::{prelude::*, *};
 
@@ -22,33 +22,35 @@ pub async fn by_server_id(
     db: &DatabaseConnection,
     server_id: i32,
 ) -> plotsystem_ftp_configurations::Model {
-    let ftp_id = super::server::by_server_id(db, server_id)
+    plotsystem_ftp_configurations::Entity::find()
+        .join(
+            JoinType::InnerJoin,
+            plotsystem_ftp_configurations::Relation::PlotsystemServers.def(),
+        )
+        .filter(Condition::all().add(plotsystem_servers::Column::Id.eq(server_id)))
+        .one(db)
         .await
-        .ftp_configuration_id
-        .unwrap();
-
-    let ftp = by_ftp_id(db, ftp_id).await;
-
-    return ftp;
-}
-
-pub async fn by_country_id(
-    db: &DatabaseConnection,
-    country_id: i32,
-) -> plotsystem_ftp_configurations::Model {
-    let server_id = super::country::by_country_id(db, country_id)
-        .await
-        .server_id;
-
-    let ftp = by_server_id(db, server_id).await;
-
-    return ftp;
+        .unwrap()
+        .unwrap()
 }
 
 pub async fn by_cp_id(db: &DatabaseConnection, cp_id: i32) -> plotsystem_ftp_configurations::Model {
-    let country_id = super::city_project::by_cp_id(db, cp_id).await.country_id;
-
-    let ftp = by_country_id(db, country_id).await;
-
-    return ftp;
+    plotsystem_ftp_configurations::Entity::find()
+        .join(
+            JoinType::InnerJoin,
+            plotsystem_ftp_configurations::Relation::PlotsystemServers.def(),
+        )
+        .join(
+            JoinType::InnerJoin,
+            plotsystem_servers::Relation::PlotsystemCountries.def(),
+        )
+        .join(
+            JoinType::InnerJoin,
+            plotsystem_countries::Relation::PlotsystemCityProjects.def(),
+        )
+        .filter(Condition::all().add(plotsystem_city_projects::Column::Id.eq(cp_id)))
+        .one(db)
+        .await
+        .unwrap()
+        .unwrap()
 }
