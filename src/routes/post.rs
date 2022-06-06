@@ -23,9 +23,16 @@ pub async fn plot_add(
 
     let crate::auth::auth_preflag_request_guard::AuthPreflag(api_key) = auth_preflag;
 
-    match crate::db_get::api_keys::cp_related_to_api_key(db, &api_key, plot_json.city_project_id)
-        .await
+    match match crate::db_get::api_keys::cp_related_to_api_key(
+        db,
+        &api_key,
+        plot_json.city_project_id,
+    )
+    .await
     {
+        Ok(cp) => cp,
+        Err(e) => return Err(status::BadRequest(Some(e.to_string()))),
+    } {
         true => {
             // this horrible chunk of code could probably be optimized using this:
             // https://www.sea-ql.org/SeaORM/docs/basic-crud/insert/

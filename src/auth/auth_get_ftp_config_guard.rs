@@ -2,6 +2,7 @@ use rocket::http::Status;
 use rocket::outcome::Outcome;
 use rocket::request::{self, FromRequest, Request};
 use sea_orm_rocket::Connection;
+use rocket::outcome::Outcome::Success;
 
 use crate::pool::Db;
 
@@ -26,11 +27,12 @@ impl<'r> FromRequest<'r> for FtpAuth {
 
         println!("{}", api_key);
 
-        let db = req
+        let db = match req
             .guard::<Connection<'_, Db>>()
-            .await
-            .unwrap()
-            .into_inner();
+            .await {
+                Success(db) => db.into_inner(),
+                _ => return Outcome::Failure((Status::BadRequest, AuthError::Invalid)),
+            };
 
         let id_type = match req
             .uri()
@@ -44,26 +46,33 @@ impl<'r> FromRequest<'r> for FtpAuth {
 
         println!("{}", id_type);
 
-        let id = match req.uri().path().raw_segments().last() {
+        let id = match match req.uri().path().raw_segments().last() {
             Some(n) => n,
             None => return Outcome::Failure((Status::BadRequest, AuthError::Missing)),
         }
         .to_string()
         .to_owned()
         .parse::<i32>()
-        .unwrap();
+        {
+            Ok(id) => id,
+            Err(_) => return Outcome::Failure((Status::BadRequest, AuthError::Invalid)),
+        };
 
         println!("{}", id);
 
-        match match id_type.as_str() {
+        match match match id_type.as_str() {
             "ftp_id" => ftp_configuration_related_to_api_key(db, &api_key, id).await,
             "server_id" => server_related_to_api_key(db, &api_key, id).await,
             "cp_id" => cp_related_to_api_key(db, &api_key, id).await,
             _ => return Outcome::Failure((Status::BadRequest, AuthError::Missing)),
+            
         }
         // This should work but doesn't 🤷‍♂️
-        //.await
+        //.await 
         {
+            Ok(exists) => exists,
+            Err(e) => return Outcome::Failure((Status::BadRequest, AuthError::DataBaseError(e.to_string()))),
+        } {
             true => Outcome::Success(FtpAuth(api_key.to_owned())),
             false => Outcome::Failure((Status::Unauthorized, AuthError::Unauthorized)),
         }

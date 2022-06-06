@@ -12,12 +12,15 @@ pub async fn get_ftp_configuration(
 ) -> Result<Json<plotsystem_ftp_configurations::Model>, Status> {
     let db = conn.into_inner();
 
-    return match id_type.as_str() {
-        "ftp_id" => Ok(Json(db_get::ftp_configuration::by_ftp_id(db, id).await)),
-        "server_id" => Ok(Json(db_get::ftp_configuration::by_server_id(db, id).await)),
-        "cp_id" => Ok(Json(db_get::ftp_configuration::by_cp_id(db, id).await)),
-        _ => Err(Status::BadRequest),
-    };
+    match match id_type.as_str() {
+        "ftp_id" => db_get::ftp_configuration::by_ftp_id(db, id).await,
+        "server_id" => db_get::ftp_configuration::by_server_id(db, id).await,
+        "cp_id" => db_get::ftp_configuration::by_cp_id(db, id).await,
+        _ => return Err(Status::BadRequest),
+    } {
+        Ok(ftp_configuration) => Ok(Json(ftp_configuration)),
+        Err(_) => Err(Status::BadRequest),
+    }
 }
 
 #[get("/get_city_project/<id>")]
@@ -28,7 +31,11 @@ pub async fn get_city_project(
 ) -> Result<Json<plotsystem_city_projects::Model>, Status> {
     let db = conn.into_inner();
 
-    return Ok(Json(db_get::city_project::by_cp_id(db, id).await));
+    match db_get::city_project::by_cp_id(db, id).await {
+        Ok(cp) => Ok(Json(cp)),
+        // Return error message in status
+        Err(_) => Err(Status::BadRequest),
+    }
 }
 
 #[get("/get_city_projects")]
@@ -38,7 +45,11 @@ pub async fn get_city_projects(
 ) -> Result<Json<Vec<plotsystem_city_projects::Model>>, Status> {
     let db = conn.into_inner();
 
-    return Ok(Json(db_get::city_project::all(db).await));
+    match db_get::city_project::all(db).await {
+        Ok(cp) => Ok(Json(cp)),
+        // Return error message in status
+        Err(_) => Err(Status::BadRequest),
+    }
 }
 
 #[get("/get_server/<id_type>/<id>")]
@@ -50,11 +61,14 @@ pub async fn get_server(
 ) -> Result<Json<plotsystem_servers::Model>, Status> {
     let db = conn.into_inner();
 
-    return match id_type.as_str() {
-        "server_id" => Ok(Json(db_get::server::by_server_id(db, id).await)),
-        "country_id" => Ok(Json(db_get::server::by_country_id(db, id).await)),
-        _ => Err(Status::BadRequest),
-    };
+    match match id_type.as_str() {
+        "server_id" => db_get::server::by_server_id(db, id).await,
+        "country_id" => db_get::server::by_country_id(db, id).await,
+        _ => return Err(Status::BadRequest),
+    } {
+        Ok(server) => Ok(Json(server)),
+        Err(_) => Err(Status::BadRequest),
+    }
 }
 
 #[get("/get_plot/<plot_id>")]
@@ -65,7 +79,11 @@ pub async fn get_plot(
 ) -> Result<Json<plotsystem_plots::Model>, Status> {
     let db = conn.into_inner();
 
-    return Ok(Json(db_get::plot::by_plot_id(db, plot_id).await));
+    match db_get::plot::by_plot_id(db, plot_id).await {
+        Ok(plot) => Ok(Json(plot)),
+        // Return error message in status
+        Err(_) => Err(Status::BadRequest),
+    }
 }
 
 #[get("/get_plots?<status>&<pasted>&<limit>")]
@@ -78,9 +96,11 @@ pub async fn get_plots(
 ) -> Result<Json<Vec<plotsystem_plots::Model>>, Status> {
     let db = conn.into_inner();
 
-    return Ok(Json(
-        db_get::plot::filtered(db, status, pasted, limit).await,
-    ));
+    match db_get::plot::filtered(db, status, pasted, limit).await {
+        Ok(plots) => Ok(Json(plots)),
+        // Return error message in status
+        Err(_) => Err(Status::BadRequest),
+    }
 }
 
 #[get("/<bytes>")]

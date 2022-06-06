@@ -1,16 +1,20 @@
-use sea_orm::{DatabaseConnection, PaginatorTrait, QueryFilter};
+use sea_orm::{DatabaseConnection, DbErr, PaginatorTrait, QueryFilter};
 
 use crate::entities::{prelude::*, *};
 
 use sea_orm::entity::*;
 
-pub async fn by_plot_id(db: &DatabaseConnection, plot_id: i32) -> plotsystem_plots::Model {
-    PlotsystemPlots::find_by_id(plot_id)
-        .one(db)
-        .await
-        .unwrap()
-        .unwrap()
-        .into()
+pub async fn by_plot_id(
+    db: &DatabaseConnection,
+    plot_id: i32,
+) -> Result<plotsystem_plots::Model, DbErr> {
+    match PlotsystemPlots::find_by_id(plot_id).one(db).await? {
+        Some(plot) => Ok(plot),
+        None => Err(DbErr::RecordNotFound(format!(
+            "Plot with id {} does not exists",
+            plot_id
+        ))),
+    }
 }
 
 pub async fn filtered(
@@ -18,7 +22,7 @@ pub async fn filtered(
     status: Option<sea_orm_active_enums::Status>,
     pasted: Option<bool>,
     limit: Option<u32>,
-) -> Vec<plotsystem_plots::Model> {
+) -> Result<Vec<plotsystem_plots::Model>, DbErr> {
     let mut plots = PlotsystemPlots::find();
 
     match status {
@@ -31,12 +35,8 @@ pub async fn filtered(
         None => {}
     }
 
-    let plots_filtered;
-
     match limit {
-        Some(limit) => plots_filtered = plots.paginate(db, limit as usize).fetch().await,
-        None => plots_filtered = plots.paginate(db, 20 as usize).fetch().await,
+        Some(limit) => plots.paginate(db, limit as usize).fetch().await,
+        None => plots.paginate(db, 20 as usize).fetch().await,
     }
-
-    return plots_filtered.unwrap();
 }

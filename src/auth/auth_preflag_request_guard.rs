@@ -1,5 +1,6 @@
 use rocket::http::Status;
 use rocket::outcome::Outcome;
+use rocket::outcome::Outcome::Success;
 use rocket::request::{self, FromRequest, Request};
 use sea_orm_rocket::Connection;
 
@@ -27,15 +28,22 @@ impl<'r> FromRequest<'r> for AuthPreflag {
             None => return Outcome::Failure((Status::BadRequest, AuthError::Missing)),
         };
 
-        let db = req
-            .guard::<Connection<'_, Db>>()
-            .await
-            .unwrap()
-            .into_inner();
+        let db = match req.guard::<Connection<'_, Db>>().await {
+            Success(db) => db.into_inner(),
+            _ => return Outcome::Failure((Status::BadRequest, AuthError::Invalid)),
+        };
 
-        return match crate::db_get::api_keys::api_key_exists(db, &api_key).await {
+        match match crate::db_get::api_keys::api_key_exists(db, &api_key).await {
+            Ok(exists) => exists,
+            Err(e) => {
+                return Outcome::Failure((
+                    Status::BadRequest,
+                    AuthError::DataBaseError(e.to_string()),
+                ))
+            }
+        } {
             true => Outcome::Success(AuthPreflag(api_key)),
             false => Outcome::Failure((Status::Unauthorized, AuthError::Unauthorized)),
-        };
+        }
     }
 }

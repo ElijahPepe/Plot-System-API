@@ -13,8 +13,11 @@ pub async fn set_pasted(
 ) -> Status {
     let db = conn.into_inner();
 
-    let mut plot: plotsystem_plots::ActiveModel =
-        db_get::plot::by_plot_id(db, plot_id).await.into();
+    let mut plot: plotsystem_plots::ActiveModel = match db_get::plot::by_plot_id(db, plot_id).await
+    {
+        Ok(plot) => plot.into(),
+        Err(_) => return Status::BadRequest,
+    };
 
     plot.pasted = Set(pasted);
 
