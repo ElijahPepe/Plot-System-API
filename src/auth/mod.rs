@@ -6,8 +6,10 @@ use rocket::request::Request;
 
 #[derive(Debug)]
 pub enum AuthError {
+    DataBaseError(String),
     Missing,
     Unauthorized,
+    Invalid,
 }
 
 pub fn get_auth_key(req: &Request) -> Option<String> {

@@ -19,7 +19,9 @@ impl sea_orm_rocket::Pool for SeaOrmPool {
     type Connection = sea_orm::DatabaseConnection;
 
     async fn init(figment: &Figment) -> Result<Self, Self::Error> {
-        let config = figment.extract::<Config>().unwrap();
+        let config = figment
+            .extract::<Config>()
+            .expect("Error in Pooling initialization: Config not found");
         let mut options: ConnectOptions = config.url.into();
         options
             .max_connections(config.max_connections as u32)
