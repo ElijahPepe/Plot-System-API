@@ -1,4 +1,6 @@
-use crate::{entities::*, pool::Db};
+use crate::auth::auth_preflag_request_guard::AuthPreflag;
+use crate::{db_get, entities::*, pool::Db};
+
 use rocket::{http::Status, response::status, serde::json::Json};
 use sea_orm::{ActiveValue::*, EntityTrait};
 use sea_orm_rocket::Connection;
@@ -16,19 +18,15 @@ pub struct PlotRequestJson {
 #[post("/plot/add", format = "json", data = "<plot_json>")]
 pub async fn plot_add(
     conn: Connection<'_, Db>,
-    auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
+    auth_preflag: AuthPreflag,
     plot_json: Json<PlotRequestJson>,
 ) -> Result<Status, status::BadRequest<String>> {
     let db = conn.into_inner();
 
-    let crate::auth::auth_preflag_request_guard::AuthPreflag(api_key) = auth_preflag;
+    let AuthPreflag(api_key) = auth_preflag;
 
-    match match crate::db_get::api_keys::cp_related_to_api_key(
-        db,
-        &api_key,
-        plot_json.city_project_id,
-    )
-    .await
+    match match db_get::api_keys::cp_related_to_api_key(db, &api_key, plot_json.city_project_id)
+        .await
     {
         Ok(cp) => cp,
         Err(e) => return Err(status::BadRequest(Some(e.to_string()))),

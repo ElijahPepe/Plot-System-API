@@ -1,3 +1,4 @@
+use crate::auth::{auth_get_ftp_config_guard::FtpAuth, auth_preflag_request_guard::AuthPreflag};
 use crate::{db_get, entities::*, pool::Db};
 use rocket::{http::Status, serde::json::Json};
 use sea_orm_rocket::Connection;
@@ -5,8 +6,8 @@ use sea_orm_rocket::Connection;
 #[get("/get_ftp_configuration/<id_type>/<id>")]
 pub async fn get_ftp_configuration(
     conn: Connection<'_, Db>,
-    _auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
-    _auth: crate::auth::auth_get_ftp_config_guard::FtpAuth,
+    _auth_preflag: AuthPreflag,
+    _auth: FtpAuth,
     id_type: String,
     id: i32,
 ) -> Result<Json<plotsystem_ftp_configurations::Model>, Status> {
@@ -26,7 +27,7 @@ pub async fn get_ftp_configuration(
 #[get("/get_city_project/<id>")]
 pub async fn get_city_project(
     conn: Connection<'_, Db>,
-    _auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
+    _auth_preflag: AuthPreflag,
     id: i32,
 ) -> Result<Json<plotsystem_city_projects::Model>, Status> {
     let db = conn.into_inner();
@@ -41,7 +42,7 @@ pub async fn get_city_project(
 #[get("/get_city_projects")]
 pub async fn get_city_projects(
     conn: Connection<'_, Db>,
-    _auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
+    _auth_preflag: AuthPreflag,
 ) -> Result<Json<Vec<plotsystem_city_projects::Model>>, Status> {
     let db = conn.into_inner();
 
@@ -55,7 +56,7 @@ pub async fn get_city_projects(
 #[get("/get_server/<id_type>/<id>")]
 pub async fn get_server(
     conn: Connection<'_, Db>,
-    _auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
+    _auth_preflag: AuthPreflag,
     id_type: String,
     id: i32,
 ) -> Result<Json<plotsystem_servers::Model>, Status> {
@@ -74,7 +75,7 @@ pub async fn get_server(
 #[get("/get_plot/<plot_id>")]
 pub async fn get_plot(
     conn: Connection<'_, Db>,
-    _auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
+    _auth_preflag: AuthPreflag,
     plot_id: i32,
 ) -> Result<Json<plotsystem_plots::Model>, Status> {
     let db = conn.into_inner();
@@ -89,7 +90,7 @@ pub async fn get_plot(
 #[get("/get_plots?<status>&<pasted>&<limit>")]
 pub async fn get_plots(
     conn: Connection<'_, Db>,
-    _auth_preflag: crate::auth::auth_preflag_request_guard::AuthPreflag,
+    _auth_preflag: AuthPreflag,
     status: Option<sea_orm_active_enums::Status>,
     pasted: Option<bool>,
     limit: Option<u32>,
