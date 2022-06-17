@@ -13,13 +13,9 @@ pub enum AuthError {
 }
 
 pub fn get_auth_key(req: &Request) -> Option<String> {
-    return match req
-        .headers()
+    req.headers()
         .get("authorization")
         .collect::<Vec<&str>>()
         .get(0)
-    {
-        Some(key) => Some(key.to_string()),
-        None => None,
-    };
+        .map(|key| key.to_string())
 }

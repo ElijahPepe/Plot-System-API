@@ -54,11 +54,8 @@ pub async fn plot_add(
             };
 
             match plotsystem_plots::Entity::insert(plot).exec(db).await {
-                Ok(_) => return Ok(Status::Ok),
-                Err(e) => {
-                    // I'm gonna go to hell for this
-                    return Err(status::BadRequest(Some(format!("{:#?}", e))));
-                }
+                Ok(_) => Ok(Status::Ok),
+                Err(e) => Err(status::BadRequest(Some(format!("{:#?}", e)))), // I'm gonna go to hell for this
             }
         }
         false => Ok(Status::Unauthorized),

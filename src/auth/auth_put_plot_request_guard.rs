@@ -39,7 +39,6 @@ impl<'r> FromRequest<'r> for AuthPutGuard {
             None => return Outcome::Failure((Status::BadRequest, AuthError::Missing)),
         }
         .to_string()
-        .to_owned()
         .parse::<i32>()
         {
             Ok(id) => id,

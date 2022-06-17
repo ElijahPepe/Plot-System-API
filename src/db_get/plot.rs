@@ -37,6 +37,6 @@ pub async fn filtered(
 
     match limit {
         Some(limit) => plots.paginate(db, limit as usize).fetch().await,
-        None => plots.paginate(db, 20 as usize).fetch().await,
+        None => plots.paginate(db, 20_usize).fetch().await,
     }
 }
